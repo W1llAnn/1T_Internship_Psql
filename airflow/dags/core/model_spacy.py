@@ -45,8 +45,8 @@ for name in static_dictionaries_lst:
 
 cur.execute("SELECT max_id FROM inside_core_schema.vacancies_max_id LIMIT 1")
 current_id = cur.fetchone()
-print(current_id[0][0], type(current_id))
-current_id = int(current_id[0][0])
+print(current_id[0], type(current_id))
+current_id = int(current_id[0])
 logging.error(f"current max id {current_id}")
 
 query = f""" SELECT id, url FROM inside_core_schema.vacancies"""
@@ -73,7 +73,7 @@ class DataPreprocessing:
         updating_data = pd.merge(all_ids, df, left_on='url',
                                  right_on='vacancy_url', how='inner').drop('url', axis=1)
         new_data = df[~df['vacancy_url'].isin(updating_data['vacancy_url'])]
-        new_data['id'] = range(current_id + 1, len(new_data) + current_id + 1)
+        new_data['vacancy_id'] = range(current_id + 1, len(new_data) + current_id + 1)
         self.dataframe = pd.concat([updating_data, new_data], sort=False)
         self.dataframe.rename({'vacancy_url': 'url'}, inplace=True)
 
